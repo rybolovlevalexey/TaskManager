@@ -757,14 +757,14 @@ class Window(QMainWindow):
         self.btn_watch_tasks = QPushButton(self)
         self.btn_watch_tasks.setText('Просмотреть задачи')
         self.btn_watch_tasks.resize(300, 100)
-        self.btn_watch_tasks.move(75, 350)
+        self.btn_watch_tasks.move(425, 150)
         self.btn_watch_tasks.setFont(self.font1)
         self.btn_watch_tasks.clicked.connect(self.watch_tasks_pushed)
 
         self.btn_watch_weather = QPushButton(self)
         self.btn_watch_weather.setText('Погода')
         self.btn_watch_weather.resize(300, 100)
-        self.btn_watch_weather.move(425, 150)
+        self.btn_watch_weather.move(250, 300)
         self.btn_watch_weather.setFont(self.font1)
         self.btn_watch_weather.clicked.connect(self.watch_weather_pushed)
 
