@@ -659,6 +659,17 @@ class WidgetAppendNewTask(QWidget):
         self.close()
 
 
+class WidgetWatchingWeather(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.resize(800, 600)
+        self.move(500, 300)
+        self.setWindowTitle('Погода')
+
+        self.font1 = QFont()
+        self.font1.setPointSize(16)
+
+
 class Window(QMainWindow):
     def __init__(self):
         super(Window, self).__init__()
@@ -673,16 +684,23 @@ class Window(QMainWindow):
         self.btn_new_task = QPushButton(self)
         self.btn_new_task.setText('Добавить задачу')
         self.btn_new_task.resize(300, 100)
-        self.btn_new_task.move(250, 150)
+        self.btn_new_task.move(75, 150)
         self.btn_new_task.setFont(self.font1)
         self.btn_new_task.clicked.connect(self.new_task_pushed)
 
         self.btn_watch_tasks = QPushButton(self)
         self.btn_watch_tasks.setText('Просмотреть задачи')
         self.btn_watch_tasks.resize(300, 100)
-        self.btn_watch_tasks.move(250, 350)
+        self.btn_watch_tasks.move(75, 350)
         self.btn_watch_tasks.setFont(self.font1)
         self.btn_watch_tasks.clicked.connect(self.watch_tasks_pushed)
+
+        self.btn_watch_weather = QPushButton(self)
+        self.btn_watch_weather.setText('Погода')
+        self.btn_watch_weather.resize(300, 100)
+        self.btn_watch_weather.move(425, 150)
+        self.btn_watch_weather.setFont(self.font1)
+        self.btn_watch_weather.clicked.connect(self.watch_weather_pushed)
 
         self.about_action = QAction(self)
         self.about_action.triggered.connect(self.about_show)
@@ -717,6 +735,10 @@ class Window(QMainWindow):
 
         self.new_task_window = WidgetAppendNewTask()
         self.watch_tasks_window = WidgetWatchingTasks()
+        self.watch_weather_window = WidgetWatchingWeather()
+
+    def watch_weather_pushed(self):
+        self.watch_weather_window.show()
 
     def about_show(self):
         self.about_window.show()
