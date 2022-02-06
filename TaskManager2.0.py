@@ -20,6 +20,9 @@ from PyQt5.QtWidgets import QTableWidgetItem
 from PyQt5.QtGui import QFont
 from PyQt5.QtGui import QIcon
 from PyQt5.QtGui import QColor
+from bs4 import BeautifulSoup
+import requests
+from PyQt5.QtGui import QPainter, QColor, QFont
 
 
 class InformationWidget(QWidget):
@@ -669,6 +672,69 @@ class WidgetWatchingWeather(QWidget):
         self.font1 = QFont()
         self.font1.setPointSize(16)
 
+        self.font2 = QFont()
+        self.font2.setPointSize(40)
+        self.font2.setBold(True)
+
+        self.font3 = QFont()
+        self.font3.setPointSize(24)
+
+        url = "https://yandex.ru/pogoda/chelyabinsk?from=tableau_yabro&lat=55.198826&lon=61.323891"
+        html_text = requests.get(url).text
+        soup = BeautifulSoup(html_text, 'lxml')
+
+        # состояние воздуха в данный момент
+        condition_now = soup.find('div', class_='link__condition day-anchor i-bem').text
+
+        # температура сейчас в челябинске
+        div_temp_now = soup.find('div', class_='temp fact__temp fact__temp_size_s')
+        temp_now = div_temp_now.find('span',
+                                     class_='temp__value temp__value_with-unit').text
+
+        # температура на весь день
+        sp = map(lambda x: x.text, soup.find_all('div', class_='fact__hour-temp'))
+        sp = list(filter(lambda x: x != 'Восход' and x != 'Закат', sp))
+        four_temps = (sp[::3])
+        del four_temps[0]
+        four_temps = four_temps[:8]
+        self.infolbl = QLabel(self)
+        self.infolbl.setText('Изменение температуры воздуха через каждые три часа')
+        self.infolbl.setFont(self.font1)
+        self.infolbl.move(50, 200)
+
+        for i in range(len(four_temps)):
+            lblh = QLabel(self)
+            lblh.setText(four_temps[i])
+            lblh.move(25 + i * 100, 250)
+            lblh.setFont(self.font1)
+        self.lbl_temp_now = QLabel(self)
+        self.lbl_temp_now.setFont(self.font2)
+        self.lbl_temp_now.setText(str(temp_now))
+        self.lbl_temp_now.move(275, 50)
+
+        self.lbl_condition = QLabel(self)
+        self.lbl_condition.setFont(self.font3)
+        self.lbl_condition.setText(condition_now)
+        self.lbl_condition.move(425, 60)
+
+        self.lbl_wind_speed = QLabel(self)
+        self.lbl_wind_speed.setText('Скорость ветра ' + str(soup.find('span', class_='wind-speed').text) + ' м/с')
+        self.lbl_wind_speed.move(250, 350)
+        self.lbl_wind_speed.setFont(self.font3)
+
+        self.lbl_water = QLabel(self)
+        self.lbl_water.setText(
+            'Влажность воздуха ' + (soup.find('div', class_='term term_orient_v fact__humidity').find('div', class_='term__value').text))
+        self.lbl_water.move(250, 425)
+        self.lbl_water.setFont(self.font3)
+
+        self.lbl_pr = QLabel(self)
+        self.lbl_pr.setText(
+            'Атмосферное давление ' + (
+                soup.find('div', class_='term term_orient_v fact__pressure').find('div',
+                                                                                  class_='term__value').text))
+        self.lbl_pr.move(200, 500)
+        self.lbl_pr.setFont(self.font3)
 
 class Window(QMainWindow):
     def __init__(self):
